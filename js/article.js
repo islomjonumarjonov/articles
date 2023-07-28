@@ -29,11 +29,10 @@ request.send();
 function updateUI(data) {
   const ul = document.createElement("ul");
   const docFrag = document.createDocumentFragment();
-  console.log(docFrag);
-  console.log(data);
   const li = document.createElement("li");
   li.classList.add("card");
   li.innerHTML = `
+      <img height=350 src="${data.image}" alt="">
       <h3>Title: ${data.title}</h3>
       <br />
       <p>Author: ${data.author}</p>
