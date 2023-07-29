@@ -1,25 +1,31 @@
 const overlay = document.querySelector(".overlay");
 const articlesContainer = document.getElementById("article-container");
 
-const request = new XMLHttpRequest();
+const getData = async () => {
+  overlay.classList.remove("hidden");
+  const req = await fetch("http://localhost:3000/articles");
 
-request.addEventListener("readystatechange", () => {
-  if (request.readyState == 4 && request.status == 200) {
-    const data = JSON.parse(request.responseText);
-    updateUI(data);
+  if (req.status >= 500) {
     overlay.classList.add("hidden");
-  } else if (request.readyState == 4) {
-    console.log("error");
+    throw Error("Server bilan bogliq hatolik");
+  } else if (req.status >= 400) {
     overlay.classList.add("hidden");
-  } else {
-    overlay.classList.remove("hidden");
+    throw Error("Page not found");
   }
-});
+  const data = await req.json();
+  overlay.classList.add("hidden");
+  return data;
+};
 
-request.open("GET", "http://localhost:3000/articles");
-request.send();
+getData()
+  .then((data) => {
+    updateUI(data);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
-// update ul
+// update ui
 
 function updateUI(data) {
   const ul = document.createElement("ul");
